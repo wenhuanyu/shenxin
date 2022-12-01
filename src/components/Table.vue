@@ -47,7 +47,7 @@
                 <el-form-item v-if="emotionId">
                     <el-button type="primary" @click="copySubmit" style="margin-left: 10px!important;">复制</el-button>
                 </el-form-item>
-				<el-select v-if="state_title" v-model="form.status" placeholder="全部" class="state_title">
+				<el-select v-if="state_title" v-model="form.status" placeholder="全部" class="state_title" clearable>
 					<el-option v-for="item in state_title_list" :key="item.id" :label="item.name" :value="item.id">
 					</el-option>
 				</el-select>
@@ -691,7 +691,7 @@
                         this.loading = false
                     },2000)
                 })
-                this.form.status = ''
+                // this.form.status = ''
                 this.form.test_paper_id = ''
             },
 			// 删除接口

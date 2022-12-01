@@ -3,7 +3,6 @@
         <Table
             :tableTitle="tableTitle"
             :search-url="url"
-            :tableType = "2"
             :add="false"
             :operation-list="operationList"
             :operation-left="false"

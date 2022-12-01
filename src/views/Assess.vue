@@ -39,22 +39,27 @@
                                         <el-col :span="12">
                                             <el-select placeholder="请选择患者"
                                                        v-model="patientListName"
+                                                       filterable :filter-method="dataFilter"
+                                                       @visible-change="visibleHideSelectInput"
                                                        @change="onPatientChange($event)"
                                                        clearable
                                             >
-                                                <el-option v-for="item in patientList"
+                                                <el-option v-for="item in deviceIdList"
                                                            :key="item.id"
                                                            :value="item.id"
-                                                           :label="item.name +'  '+ item.age+'岁'"></el-option>
+                                                           :label="item.name +'  '+ item.age+'岁'+'  '+item.medical_num"></el-option>
                                             </el-select>
                                         </el-col>
                                         <el-col :span="12">
                                             <el-select placeholder="请选择终端"
                                                        v-model="terminal_nickname"
-                                                       @change="hanldClickTerminal($event)" style="width: 100%;"
+                                                       filterable :filter-method="dataFilterTerminal"
+                                                       @visible-change="visibleHideSelectInputTerminal"
+                                                       @change="hanldClickTerminal($event)"
+                                                       style="width: 100%;"
                                                        clearable
                                             >
-                                                <el-option v-for="item in terminalList"
+                                                <el-option v-for="item in terminalIdList"
                                                            :key="item.id"
                                                            :value="item.id"
                                                            :label="item.nickname"></el-option>
@@ -292,7 +297,9 @@ export default {
             onPeriodTimeChange_id: '',
             period_e: '',
             statistics: true,
-            policyIds: ''
+            policyIds: '',
+            terminalIdList:[],
+            deviceIdList:[],
         };
     },
     mounted() {
@@ -305,20 +312,55 @@ export default {
     computed: {},
     watch: {},
     methods: {
+        // 自定义筛选方法
+        dataFilter(val) {
+            if (val) {
+                let filterResult = [];
+                let originalData = JSON.parse(JSON.stringify(this.patientList));
+                originalData.filter((item) => {
+                    if (item.medical_num.includes(val)) {
+                        filterResult.push(item);
+                    }
+                })
+                this.deviceIdList = filterResult
+
+            } else {
+                this.deviceIdList = this.patientList;
+            }
+        },
+        // 当下拉框出现时触发
+        visibleHideSelectInput(val) {
+            if(val) {
+                this.deviceIdList = JSON.parse(JSON.stringify(this.patientList));
+            }
+        },
+        // 自定义筛选方法
+        dataFilterTerminal(val) {
+            if (val) {
+                let filterResult = [];
+                let originalData = JSON.parse(JSON.stringify(this.terminalList));
+                originalData.filter((item) => {
+                    if (item.nickname.includes(val)) {
+                        filterResult.push(item);
+                    }
+                })
+                this.terminalIdList = filterResult
+
+            } else {
+                this.terminalIdList = this.terminalList;
+            }
+        },
+        // 当下拉框出现时触发
+        visibleHideSelectInputTerminal(val) {
+            if(val) {
+                this.terminalIdList = JSON.parse(JSON.stringify(this.terminalList));
+            }
+        },
         period(e) {
             this.period_e = e
         },
         onDialogClose() {
-            this.add_newList = [];
-            this.patientListName = '';
-            this.terminal_nickname = '';
-            this.music = '';
-            this.limit_time_radio = '';
-            this.needMusic = false;
-            this.limit_time_input = '';
-            this.limit_time_radio = 0
-            this.periodTime = ''
-            this.limit_Time =''
+            this.qingkong()
         },
 
         deleteRow(index, rows) {
@@ -567,6 +609,23 @@ export default {
             console.log(e)
             console.log(this.periodTime)
         },
+        qingkong() {
+            this.add_newList = [];
+            this.patientListName = '';
+            this.terminal_nickname = '';
+            this.music = '';
+            this.limit_time_radio = '';
+            this.needMusic = false;
+            this.limit_time_input = '';
+            this.limit_time_radio = 0
+            this.periodTime = ''
+            this.limit_Time =''
+            this.infoForm = []
+            this.curindex = 0;
+            this.curInfo = ''
+            this.terminal_id = ''
+            this.terminal_id_name = ''
+        },
         async buttonSubmit() {
             if (this.period_e === true) {
                 if (this.music === '') {
@@ -617,18 +676,7 @@ export default {
                 if (res.data.code === 1) {
                     this.dialogFormVisible = false
                     this.Refresh()
-                    this.add_newList = [];
-                    this.patientListName = '';
-                    this.terminal_nickname = '';
-                    this.music = '';
-                    this.limit_time_radio = '';
-                    this.needMusic = false;
-                    this.limit_time_input = '';
-                    this.limit_time_radio = 0
-                    this.periodTime = ''
-                    this.limit_Time =''
-                    this.terminal_id = ''
-                    this.terminal_id_name = ''
+
                 }
                 console.log(res.data.info)
             })
