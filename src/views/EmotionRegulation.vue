@@ -11,7 +11,9 @@
                :report="true"
                :reportHref="reportUrl"
                :form="form"
-               :tableType = "3"/>
+               :tableType = "3"
+               :back="{}"
+        />
 
     </div>
 </template>

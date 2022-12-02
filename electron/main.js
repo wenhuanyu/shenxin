@@ -34,8 +34,8 @@ app.on('ready', function () {
     Menu.setApplicationMenu(null)
 
     // 加载应用的 index
-    // mainWindow.loadURL("http://sxqd.shoupinkangda.com/#/Login")
-    mainWindow.loadURL("http://localhost:8080/TerminalLogin")
+    mainWindow.loadURL("http://sxqd.shoupinkangda.com/#/Login")
+    // mainWindow.loadURL("http://localhost:8080/TerminalLogin")
     // mainWindow.loadURL("http://192.168.8.189:89/#/Login")
     // mainWindow.loadURL("http://shenxin.shoupinkangda.com/h5/#/Login")
 
@@ -53,7 +53,7 @@ app.on('ready', function () {
 
 
     // 打开开发工具
-    mainWindow.openDevTools();
+    // mainWindow.openDevTools();
 
     // 当 window 被关闭，这个事件会被发出
     mainWindow.on('closed', function () {

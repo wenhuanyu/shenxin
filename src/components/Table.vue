@@ -799,7 +799,7 @@
 			},
             // 返回上一页
             backPage() {
-                if(this.tableType == 1) {
+                if(this.tableType == 1 || this.tableType == 3) {
                     this.$router.replace({name: "ReportCenter"})
                 }else {
                     this.$router.go(-1);

@@ -21,7 +21,9 @@
                    :visible.sync="dialogFormVisible"
                    :destroy-on-close="true"
                    ref="dialog"
-                   @close="onDialogClose">
+                   @close="onDialogClose"
+                   width="80vw"
+        >
             <div class="dialog_con">
                 <el-form ref="form" :model="form">
                     <!--间值设置-->
@@ -292,7 +294,7 @@ export default {
                 let filterResult = [];
                 let originalData = JSON.parse(JSON.stringify(this.patientList));
                 originalData.filter((item) => {
-                    if (item.medical_num.includes(val)) {
+                    if (item.medical_num.includes(val) || item.name.includes(val)) {
                         filterResult.push(item);
                     }
                 })
@@ -577,8 +579,8 @@ export default {
 }
 /*弹框*/
 ::v-deep .dialog {
-    width: 80%;
-    height: 78%;
+    //width: 80%;
+    //height: 78%;
     //display: flex;
     flex-direction: column;
 

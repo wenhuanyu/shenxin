@@ -35,6 +35,14 @@
 </template>
 
 <script>
+var userAgent = navigator.userAgent.toLowerCase()
+if(userAgent.indexOf('electron/')>-1) {
+    console.log('桌面应用')
+    var Store = window.require('electron-store')
+    var storeName = new Store();
+}else {
+    console.log('浏览器')
+}
 export default {
     name    : "Login",
     data() {
@@ -72,11 +80,23 @@ export default {
                     this.$router.push('/');
                     sessionStorage.setItem('usertype','center')
 
-
-                    if (this.remember) {
-                        this.$store.commit('setAccount', {username: this.username, password: this.password});
-                    } else {
-                        this.$store.commit('setAccount', '');
+                    var userAgent = navigator.userAgent.toLowerCase()
+                    if(userAgent.indexOf('electron/')>-1) {
+                        if (this.remember) {
+                            //记住密码
+                            storeName.set("sxzkname",this.username);
+                            storeName.set("sxzkpassword",this.password);
+                        } else {
+                            storeName.delete('sxzkname');
+                            storeName.delete('sxzkpassword');
+                        }
+                    }else {
+                        if (this.remember) {
+                            //记住密码
+                            this.$store.commit('setAccount', {username: this.username, password: this.password});
+                        } else {
+                            this.$store.commit('setAccount', '');
+                        }
                     }
                 }
             })
@@ -96,11 +116,22 @@ export default {
     mounted() {
         this.$store.commit('setClient', false);
 
-        if (this.$store.state.user.account) {
-            let data      = this.$store.state.user.account;
-            this.password = data.password;
-            this.username = data.username;
-            this.remember = true;
+        var userAgent = navigator.userAgent.toLowerCase()
+        if(userAgent.indexOf('electron/')>-1) {
+            if(storeName.has("sxzkname")){
+                this.password = storeName.get('sxzkpassword')
+                this.username = storeName.get('sxzkname')
+                this.remember = true
+            } else  {
+                this.remember = false
+            }
+        }else {
+            if (this.$store.state.user.account) {
+                let data      = this.$store.state.user.account;
+                this.password = data.password;
+                this.username = data.username;
+                this.remember = true;
+            }
         }
     }
 }
