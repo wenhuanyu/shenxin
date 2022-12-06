@@ -16,34 +16,6 @@
                     <el-form-item label="方案名称" prop="name">
                         <el-input v-model="form.name" placeholder="请输入方案名称" class="item1" style="width: 498px"></el-input>
                     </el-form-item>
-                    <!--情绪难易级别-->
-<!--                    <el-form-item label="难易级别" prop="level">-->
-<!--                        <span style="color: #666666 ; margin-right: 5px;">心率</span>-->
-<!--                        <el-select v-model="heart_rate" placeholder="下拉查看" class="item1" style="width: 105px">-->
-<!--                            <el-option v-for="item in difficulty__"-->
-<!--                                       :key="item.id"-->
-<!--                                       :label="item.name"-->
-<!--                                       :value="item.id" style="width: 100px !important;">-->
-<!--                            </el-option>-->
-<!--                        </el-select>-->
-<!--                        <span style="color: #666666 ; margin-right: 5px; margin-left: 10px;">皮温</span>-->
-<!--                        <el-select v-model="head_temp" placeholder="下拉查看" class="item1" style="width: 105px">-->
-<!--                            <el-option v-for="item in difficulty_"-->
-<!--                                       :key="item.id"-->
-<!--                                       :label="item.name"-->
-<!--                                       :value="item.id" style="width: 100px !important;">-->
-<!--                            </el-option>-->
-<!--                        </el-select>-->
-<!--                        <span style="color: #666666 ; margin-right: 5px; margin-left: 10px;">注意力/放松度</span>-->
-<!--                        <el-select v-model="attention" placeholder="下拉查看" class="item1" style="width: 105px">-->
-<!--                            <el-option v-for="item in difficulty"-->
-<!--                                       :key="item.id"-->
-<!--                                       :label="item.name"-->
-<!--                                       :value="item.id" style="width: 100px !important;">-->
-<!--                            </el-option>-->
-<!--                        </el-select>-->
-<!--                    </el-form-item>-->
-                    <!--方案内容-->
                     <el-form-item label="方案内容">
                         <el-transfer v-model="value" :data="data" @change="handleChange" left-check-change="sd"
                                      filterable="filterable" filter-placeholder="关键词搜索" class="box-nowrap item2"
@@ -53,7 +25,7 @@
                                 <div class="item_" v-if="value_ids.includes(option.key)">
                                     <template>
                                         <el-select v-model="listMap[option.key]" placeholder="请选择"
-                                                   @change="onMusicChange($event)">
+                                                   @change="onMusicChange($event,option.key)">
                                             <el-option
                                                 v-for="item in musicList"
                                                 :key="item.id"
@@ -65,7 +37,7 @@
                                         </el-select>
                                         <el-input v-model.sync="timeMap[option.key]" placeholder="时间"
                                                   style="width: 60px !important; margin-left: 5px;"
-                                                  @change="onTime($event)"></el-input>
+                                                  @change="onTime($event,option.key)"></el-input>
                                     </template>
                                 </div>
                             </span>
@@ -149,10 +121,6 @@ export default {
                 ],
 
             },
-            // difficulty: [],
-            // difficulty_: [],
-            // difficulty__: [],
-            difficulty_id: '',
             rightChecked: [49, 66],
             submitUrl: 'api/emotion_policy/add2',
             id: 0,
@@ -193,9 +161,6 @@ export default {
         this.$store.dispatch('GetXiao')
         this.onPaper()
         this.getMusic()
-        // this.getDifficulty()
-        // this.getDifficulty_()
-        // this.getDifficulty__()
         this.id = this.$route.query.id;
         this.type = this.$route.query.type;
         if (this.$route.query.id) {
@@ -208,45 +173,66 @@ export default {
         log(option) {
             console.log('log', option.key)
         },
-        onTime(e) {
+        onTime(e,i) {
             console.log(e)
             this.game_time = e
-            this.onPaper()
+            // this.onPaper()
+            var flag = this.functiontofindIndexByKeyValue(i)
+            if(flag!==-1) {
+                this.idData[flag].game_time = e
+            } else {
+                let idData = {};
+                idData = {
+                    'game_id': i,
+                    'music_id': this.onMusicChange_id,
+                    'game_time': this.game_time,
+                }
+                this.idData.push(idData);
+            }
         },
-
-        // async getDifficulty() {
-        //     await this.$axios.post('api/common/emotion_level_lst',{type:1}).then(res => {
-        //         if (res.data.code === 1) {
-        //             this.difficulty = res.data.data;
-        //         }
-        //     })
-        // },
-        // async getDifficulty_() {
-        //     await this.$axios.post('api/common/emotion_level_lst',{type:3}).then(res => {
-        //         if (res.data.code === 1) {
-        //             this.difficulty_ = res.data.data;
-        //         }
-        //     })
-        // },
-        // async getDifficulty__() {
-        //     await this.$axios.post('api/common/emotion_level_lst',{type:4}).then(res => {
-        //         if (res.data.code === 1) {
-        //             this.difficulty__ = res.data.data;
-        //         }
-        //     })
-        // },
+        functiontofindIndexByKeyValue(valuetosearch) {
+            for (var i = 0; i < this.idData.length; i++) {
+                if (this.idData[i].game_id == valuetosearch) {
+                    return i;
+                }
+            }
+            return -1;
+        },
         onMusicChange(e) {
             console.log(e)
             this.onMusicChange_id = e
-            this.onPaper()
+            // this.onPaper
+            var flag = this.functiontofindIndexByKeyValue(i)
+            if(flag!==-1) {
+                this.idData[flag].music_id = e
+            } else {
+                let idData = {};
+                idData = {
+                    'game_id': i,
+                    'music_id': e,
+                    'game_time': this.game_time,
+                }
+                this.idData.push(idData);
+            }
         },
         handleChange(value, direction, movedKeys) {
             console.log('direction', direction);
             console.log('movedKeys', movedKeys);
             movedKeys.map((item) => {
-                this.listMap[item] = '';
+                // this.listMap[item] = '';
+                // if(direction === 'left'){
+                //     this.timeMap[item] = '';
+                //
+                // }
                 if(direction === 'left'){
                     this.timeMap[item] = '';
+                    this.listMap[item] = '';
+                    delete this.timeMap.item
+                    delete this.listMap.item
+                    var flag = this.functiontofindIndexByKeyValue(item)
+                    if(flag!==-1) {
+                        this.idData.splice(flag, 1)
+                    }
 
                 }
             })
@@ -266,22 +252,21 @@ export default {
                 if (res.data.code === 1) {
                     let list = res.data.data.all
                     const data = [];
-                    const idData = [];
+                    // const idData = [];
 
                     for (let i = 0; i < list.length; i++) {
                         data.push({
                             key: list[i].id,
                             label: list[i].name,
                         });
-                        idData[list[i].id] = {
-                            'game_id': list[i].id,
-                            'music_id': this.onMusicChange_id,
-                            'game_time': this.game_time,
-                        }
-                        this.difficulty_id = list[i].id
+                        // idData[list[i].id] = {
+                        //     'game_id': list[i].id,
+                        //     'music_id': this.onMusicChange_id,
+                        //     'game_time': this.game_time,
+                        // }
                     }
                     this.data = data;
-                    this.idData = idData;
+                    // this.idData = idData;
 
                 }
 
@@ -312,10 +297,11 @@ export default {
         onSubmit(formName) {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    this.form.game_info = this.value.map(item => {
-                        console.log(this.idData[item])
-                        return this.idData[item]
-                    })
+                    // this.form.game_info = this.value.map(item => {
+                    //     console.log(this.idData[item])
+                    //     return this.idData[item]
+                    // })
+                    this.form.game_info = this.idData
                     this.$axios.post(this.submitUrl, this.$qs.stringify(this.form)).then(res => {
                         if (res.data.code === 1) {
                             this.backPage()
