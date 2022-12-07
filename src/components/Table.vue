@@ -187,7 +187,7 @@
 							style="width: 22px;height: 22px;object-fit: contain">
 					</el-button>
 
-					<el-button v-if="qrcode && scope.row.terminal_id ==0" @click="$emit('qrcode',scope.row)" type="text"
+					<el-button v-if="qrcode && scope.row.qr_type == 1" @click="$emit('qrcode',scope.row)" type="text"
 						size="small">
 						<img src="../assets/images/qrcode.png" style="width: 22px;height: 22px">
 					</el-button>
