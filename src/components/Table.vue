@@ -117,7 +117,7 @@
 				<template slot-scope="scope">
 					<!-- <div style="display: inline-block;min-width: 100px;" v-if="operationLeft"> -->
 						<template v-if="operationLeft" >
-							<el-button v-if="InfoHref && (isAssess == false || (isAssess == true && scope.row.status==3))"
+							<el-button v-if="InfoHref && (isAssess == false || (isAssess == true && scope.row.status==3 && scope.row.type !==2))"
 								@click="handleClick(scope.row)" type="text" size="small">
 								<template v-if="info.text">{{ info.text }}</template>
 								<template v-else-if="info.icon">

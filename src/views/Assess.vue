@@ -221,6 +221,11 @@ export default {
                     width: 180
                 },
                 {
+                    name: '类型',
+                    value: 'type_name',
+                    width: 100
+                },
+                {
                     name: '测试时间',
                     value: 'create_at',
                     width: 250
