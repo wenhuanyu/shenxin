@@ -630,6 +630,13 @@ export default {
             this.curInfo = ''
             this.terminal_id = ''
             this.terminal_id_name = ''
+            this.form.patient_ids = []
+            this.form.terminal_ids = []
+            this.form.test_paper_ids = []
+            this.form.music_id = ''
+            this.form.music_time = ''
+            this.form.policy_id = []
+            this.form.limit_time = 0
         },
         async buttonSubmit() {
             if (this.period_e === true) {
